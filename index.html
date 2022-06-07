@@ -75,10 +75,10 @@
 
     lightObj.updateFunction = (obj, client) => {
         // obj.light.position.z = Math.cos(client.deltaTime);
-        if (Math.cos(client.elapsedTime * client.deltaTime / 8) < 0)
+        /*if (Math.cos(client.elapsedTime * client.deltaTime / 8) < 0)
             obj.light.intensity = 0;
         else
-            obj.light.intensity = 5;
+            obj.light.intensity = 5;*/
     }
 
     client.addSceneObject(lightObj);
