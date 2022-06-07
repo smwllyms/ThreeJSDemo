@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            padding: 0; margin: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #frame {
+            width: 80%;
+            height: 80%;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="frame"></div>
+</body>
+</html>
+
+<script type="importmap">
+    {
+      "imports": {
+        "threejsclient": "./threejs/threejsclient.js",
+        "three": "./threejs/three.module.js",
+        "sceneobject": "./threejs/sceneobject.js"
+      }
+    }
+  </script>
+  
+  <script type="module">
+  
+    import * as THREE from 'three';
+    import THREEJSClient from 'threejsclient';
+    import SceneObject from 'sceneobject';
+
+    let client = new THREEJSClient(frame);
+
+    // demo
+
+    // Box Object
+    const boxGeo = new THREE.BoxGeometry(1, 1, 1);
+    // const material = new THREE.MeshBasicMaterial({color:0x00ff00});
+    const material = new THREE.MeshPhongMaterial({color:0x00ff00, flatShading:THREE.FlatShading});
+    const mesh = new THREE.Mesh(boxGeo, material); 
+
+    mesh.position.z = -5;
+    mesh.position.x = -1;
+
+    const boxObject = new SceneObject(mesh);
+    boxObject.mesh = mesh;
+
+    boxObject.updateFunction = (obj, client)=> {
+        obj.mesh.rotation.x += 1 * client.deltaTime;
+        obj.mesh.rotation.y += 1 * client.deltaTime;
+    }
+
+    client.addSceneObject(boxObject);
+
+    // Light object
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1,1,1);
+
+    const lightObj = new SceneObject(light);
+    lightObj.light = light;
+
+    lightObj.updateFunction = (obj, client) => {
+        // obj.light.position.z = Math.cos(client.deltaTime);
+        if (Math.cos(client.elapsedTime * client.deltaTime / 8) < 0)
+            obj.light.intensity = 0;
+        else
+            obj.light.intensity = 5;
+    }
+
+    client.addSceneObject(lightObj);
+
+    // Load glb
+    const glbObj = await client.addGLTF("monkey.glb");
+    glbObj.gltfScene.position.z = -5;
+    glbObj.gltfScene.position.x = 1;
+    client.addSceneObject(glbObj);
+
+
+  
+  </script>
